@@ -1,21 +1,220 @@
 # Ai
 
-This repository contains a minimal example Python module.
+這個倉庫提供一份**詳細的 Codex 使用教程**（面向 GitHub 工作流），協助你從零開始把 Codex 導入專案，完成安裝、設定、日常使用與最佳實務。
 
-## Usage
+## 目錄
 
-Run the `hello.py` script to see a greeting:
+- [什麼是 Codex？](#什麼是-codex)
+- [前置準備](#前置準備)
+- [建立與整理 GitHub 專案](#建立與整理-github-專案)
+- [安裝與設定 Codex](#安裝與設定-codex)
+- [在 GitHub 專案中使用 Codex 的基本流程](#在-github-專案中使用-codex-的基本流程)
+- [常見任務範例（含指令）](#常見任務範例含指令)
+- [撰寫高品質提示詞（Prompt）](#撰寫高品質提示詞prompt)
+- [最佳實務與踩坑整理](#最佳實務與踩坑整理)
+- [進階：把 Codex 納入 Pull Request 工作流](#進階把-codex-納入-pull-request-工作流)
+- [疑難排解](#疑難排解)
 
-```bash
-python hello.py
+---
+
+## 什麼是 Codex？
+
+Codex 是一個能協助你閱讀、撰寫、修改程式碼的 AI 工具。它可以用自然語言理解你的需求，幫你產出程式碼、重構現有程式、撰寫測試或文件，並且能在 GitHub 專案中配合你的開發流程。
+
+> 簡單理解：Codex 就像是一個「會寫程式的隊友」，你給它清楚的目標與限制，它就能協助你產生高品質的程式碼或文字說明。
+
+---
+
+## 前置準備
+
+1. **GitHub 帳號**：要有 GitHub 帳號並能建立/管理倉庫。
+2. **本機開發環境**：建議具備以下工具：
+   - `git`
+   - `python`（或你主要使用的語言）
+   - 文字編輯器（如 VS Code）
+3. **Codex 使用管道**：你可以透過以下方式使用 Codex：
+   - ChatGPT / Codex 網頁介面
+   - CLI/IDE 整合（依你手邊工具為準）
+
+---
+
+## 建立與整理 GitHub 專案
+
+1. **建立新倉庫**
+   - 前往 GitHub → New repository
+   - 設定專案名稱與可見度
+   - 勾選 `Add a README file`
+
+2. **clone 到本機**
+   ```bash
+   git clone <你的-repo-url>
+   cd <你的-repo-name>
+   ```
+
+3. **建議的基本結構**
+   ```
+   your-repo/
+   ├─ README.md
+   ├─ src/
+   ├─ tests/
+   └─ .gitignore
+   ```
+
+---
+
+## 安裝與設定 Codex
+
+> 不同平台與工具會有不同方式。以下給一個通用化的設定思路：
+
+1. **登入或啟用 Codex**
+   - 使用 ChatGPT / Codex 平台登入
+   - 若使用 IDE 外掛或 CLI，依官方文件完成安裝與登入
+
+2. **設定專案上下文（重要）**
+   - 讓 Codex 知道你的專案結構與需求
+   - 例如：
+     - 專案語言/框架
+     - 代碼風格（lint/format）
+     - 測試工具
+
+3. **提供必要資訊**
+   - 告知 Codex 你的「目標」與「限制」
+   - 例如：
+     - 「請用 Python 寫」
+     - 「不可改動某些檔案」
+     - 「請加入測試」
+
+---
+
+## 在 GitHub 專案中使用 Codex 的基本流程
+
+1. **定義需求**
+   - 清楚描述你要做的事（功能/bug/重構）
+
+2. **讓 Codex 讀取專案**
+   - 提供相關檔案內容或結構
+
+3. **要求 Codex 產出修改**
+   - 例如：新增函式、修改邏輯、補測試
+
+4. **審查並套用修改**
+   - 仔細 review 內容
+   - 需要時調整與優化
+
+5. **本機測試**
+   - 使用測試或執行程式驗證結果
+
+6. **提交到 GitHub**
+   - `git add` → `git commit` → `git push`
+
+---
+
+## 常見任務範例（含指令）
+
+### ✅ 1. 產生新功能
+
+> 需求：新增一個 `add(a, b)` 函式並附測試
+
+你可以這樣對 Codex 說：
+
+```
+請在 src/math.py 新增 add(a, b) 函式，並在 tests/test_math.py 補測試。
 ```
 
-## Running Tests
+---
 
-Tests use `pytest`. Install it and run:
+### ✅ 2. 讀取並解釋現有程式
 
-```bash
-pip install pytest
-pytest
+```
+請解釋 src/api.py 這段程式在做什麼，並指出潛在問題。
 ```
 
+---
+
+### ✅ 3. 重構與改善
+
+```
+請把 src/parser.py 重構成可讀性更高的版本，保持功能不變。
+```
+
+---
+
+## 撰寫高品質提示詞（Prompt）
+
+### ✅ 好的提示詞包含：
+
+- **具體目標**：要完成什麼功能？
+- **範圍限制**：哪些檔案可以改？哪些不能？
+- **語言/框架**：你用什麼技術？
+- **輸出格式**：要 patch、要清單、要步驟？
+
+### ✅ 範例：
+
+```
+請在 src/user.py 增加一個 `get_user(id)` 函式，
+- 使用 SQLAlchemy
+- 不要改動其他檔案
+- 補上 tests/test_user.py 測試
+```
+
+---
+
+## 最佳實務與踩坑整理
+
+✅ **先提供上下文**：越了解專案，Codex 給的答案越準
+
+✅ **逐步拆解需求**：複雜任務可拆成小步驟
+
+✅ **先讓它解釋再修改**：避免錯誤改動
+
+✅ **小心自動生成的程式碼**：仍需審查與測試
+
+⚠️ **避免模糊指令**（如："幫我修好"）
+
+⚠️ **注意安全資訊**：不要提供私鑰或機密
+
+---
+
+## 進階：把 Codex 納入 Pull Request 工作流
+
+1. **建立分支**
+   ```bash
+   git checkout -b feature/add-user
+   ```
+
+2. **用 Codex 產生修改**
+
+3. **本機測試**
+   ```bash
+   pytest
+   ```
+
+4. **提交與推送**
+   ```bash
+   git add .
+   git commit -m "Add user feature"
+   git push origin feature/add-user
+   ```
+
+5. **建立 Pull Request**
+   - 在 GitHub 上開 PR
+   - 可在 PR 描述加入 Codex 產出摘要
+
+---
+
+## 疑難排解
+
+**Q: Codex 輸出跟我想的不一樣？**
+- 重新描述需求，提供更多上下文
+- 指定檔案範圍與格式限制
+
+**Q: 產生的程式碼有 bug？**
+- 先讓 Codex 解釋程式邏輯
+- 要求它修正並加測試
+
+**Q: Codex 不會我的框架？**
+- 提供該框架範例或指出版本
+
+---
+
+如果你想針對特定專案或技術棧（如 React、Django、Rust）產生更精準的教學，也可以告訴我，我可以替你擴充教學內容。
